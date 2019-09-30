@@ -1,0 +1,12 @@
+{ // RENAME to local.settings.json during development
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "CosmosDbConnectionString": "[YOUR-COSMOSDB-MONGO-CONNECTIONSTRING]",
+    "CosmosDbName": "[COSMOS-DB-NAME]",
+    "CosmosDbCollectionName": "[COSMOS-COLLECTION-NAME]",
+    "StorageConnectionString": "[TARGET-STORAGE-ACCOUNT-CONNECTIONSTRING]",
+    "ExportContainerName": "[BLOB-STORAGE-CONTAINER-NAME]"
+  }
+}
