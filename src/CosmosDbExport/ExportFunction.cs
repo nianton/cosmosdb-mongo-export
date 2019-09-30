@@ -49,7 +49,7 @@ namespace CosmosDbExport
         /// <param name="myTimer"></param>
         /// <param name="log"></param>
         [FunctionName(nameof(ExportFunction))]
-        public static async Task Run([TimerTrigger("0 */5 * * * *", RunOnStartup = true)]TimerInfo myTimer, ILogger log)
+        public static async Task Run([TimerTrigger("0 */30 * * * *", RunOnStartup = true)]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
@@ -76,7 +76,7 @@ namespace CosmosDbExport
                     {
                         var recordJson = record.ToJson();
                         var recordId = record.GetValue("id").AsString;
-                        var blob = blobContainer.GetBlockBlobReference($"{recordId}.json");
+                        var blob = blobContainer.GetBlockBlobReference($"{CosmosDbCollectionName}/{recordId}.json");
                         await blob.UploadTextAsync(recordJson);
 
                         var deleteDocumentElements = new[] {
