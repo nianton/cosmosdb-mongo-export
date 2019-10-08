@@ -77,7 +77,8 @@ namespace CosmosDbExport
                     {
                         var recordJson = record.ToJson();
                         var recordId = record.GetValue("_id").AsString;
-                        var blob = blobContainer.GetBlockBlobReference($"{CosmosDbCollectionName}/{recordId}.json");
+                        var recordDate = UnixEpoch.AddSeconds(record.GetValue("_created_at").AsBsonTimestamp.Timestamp);
+                        var blob = blobContainer.GetBlockBlobReference($"{CosmosDbCollectionName}/{recordDate:yyyyMMddHHmmss}_{recordId}.json");
                         await blob.UploadTextAsync(recordJson);
 
                         var deleteDocumentElements = new[] {
