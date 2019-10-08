@@ -16,7 +16,7 @@ namespace CosmosDbExport
         /// <summary>
         /// The number of days from which older records will be exported.
         /// </summary>
-        private const int NumberOfDaysThreshold = 180;
+        private static int NumberOfDaysThreshold = 180;
 
         private const string ThrottlingErrorMessage = "request rate is large";
         private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -34,6 +34,7 @@ namespace CosmosDbExport
         /// </summary>
         static ExportFunction()
         {
+            NumberOfDaysThreshold = int.Parse(Environment.GetEnvironmentVariable("NumberOfDaysThreshold"));
             CosmosDbConnectionString = Environment.GetEnvironmentVariable("CosmosDbConnectionString");
             CosmosDbName = Environment.GetEnvironmentVariable("CosmosDbName");
             CosmosDbCollectionName = Environment.GetEnvironmentVariable("CosmosDbCollectionName");
@@ -75,13 +76,12 @@ namespace CosmosDbExport
                     foreach (var record in batch)
                     {
                         var recordJson = record.ToJson();
-                        var recordId = record.GetValue("id").AsString;
+                        var recordId = record.GetValue("_id").AsString;
                         var blob = blobContainer.GetBlockBlobReference($"{CosmosDbCollectionName}/{recordId}.json");
                         await blob.UploadTextAsync(recordJson);
 
                         var deleteDocumentElements = new[] {
-                            new BsonElement("id", recordId),
-                            new BsonElement("collectionName", record.GetValue("collectionName"))
+                            new BsonElement("_id", recordId)
                         }.ToList();
                         var deleteResult = await mongoCollection.DeleteOneAsync(new BsonDocument(deleteDocumentElements));
                     }
@@ -111,8 +111,7 @@ namespace CosmosDbExport
             var dateThreshold = DateTime.UtcNow.Subtract(TimeSpan.FromDays(NumberOfDaysThreshold));
 
             var builder = Builders<BsonDocument>.Filter;
-            var filter = builder.Eq("collectionName", "_PushStatus")
-                       & builder.Lt("value._created_at", new BsonDateTime(dateThreshold));
+            var filter = builder.Lt("_created_at", new BsonDateTime(dateThreshold));
 
             return filter;
         }
