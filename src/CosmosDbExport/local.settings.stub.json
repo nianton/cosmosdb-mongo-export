@@ -7,6 +7,7 @@
     "CosmosDbName": "[COSMOS-DB-NAME]",
     "CosmosDbCollectionName": "[COSMOS-COLLECTION-NAME]",
     "StorageConnectionString": "[TARGET-STORAGE-ACCOUNT-CONNECTIONSTRING]",
-    "ExportContainerName": "[BLOB-STORAGE-CONTAINER-NAME]"
+    "ExportContainerName": "[BLOB-STORAGE-CONTAINER-NAME]",
+    "NumberOfDaysThreshold": 180
   }
 }
