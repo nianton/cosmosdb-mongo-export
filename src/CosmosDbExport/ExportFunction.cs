@@ -77,7 +77,7 @@ namespace CosmosDbExport
                     {
                         var recordJson = record.ToJson();
                         var recordId = record.GetValue("_id").AsString;
-                        var recordDate = UnixEpoch.AddSeconds(record.GetValue("_created_at").AsBsonTimestamp.Timestamp);
+                        var recordDate = UnixEpoch.AddMilliseconds(record.GetValue("_created_at").AsBsonDateTime.MillisecondsSinceEpoch);
                         var blob = blobContainer.GetBlockBlobReference($"{CosmosDbCollectionName}/{recordDate:yyyyMMddHHmmss}_{recordId}.json");
                         await blob.UploadTextAsync(recordJson);
 
